@@ -29,15 +29,19 @@ function createStepHTML(step, status = null) {
     }
 
     html += `<div>`;
-    if (step.escuela) html += `<span class="tag">Escuela: ${step.escuela}</span>`;
+    if (step.escuela) html += escuelaTag(step.escuela);
     if (step.creador) html += `<span class="tag">Creador: ${step.creador}</span>`;
-    if (step.instructional) html += `<span class="tag">Instructional: ${step.instructional}</span>`;
+    if (step.instructional) html += `<span class="tag">${step.instructional}</span>`;
     html += `</div>`;
-
-
 
     html += `</div>`; // .info
     return html;
+}
+
+function escuelaTag(escuela) {
+    return `<span class="tag ${
+        escuela.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
+    }">${escuela}</span>`;
 }
 
 
@@ -56,8 +60,8 @@ function updateFilters(data) {
     const escuelaSelect = document.getElementById('filter-escuela');
     const creadorSelect = document.getElementById('filter-creador');
 
-    escuelaSelect.innerHTML = '<option value="">Filter by Escuela</option>';
-    creadorSelect.innerHTML = '<option value="">Filter by Creador</option>';
+    escuelaSelect.innerHTML = '<option value="">Filtrar por Escuela</option>';
+    creadorSelect.innerHTML = '<option value="">Filtrar por Creador</option>';
 
     [...escuelas].sort().forEach(value => {
         escuelaSelect.innerHTML += `<option value="${value}">${value}</option>`;
@@ -196,7 +200,16 @@ async function loadSteps() {
     loader.style.display = 'block';
     try {
         const response = await fetch(API_URL);
-        const data = await response.json();
+        let data = await response.json();
+        // Filtrar pasos de nueva escuela, no nos importan
+
+        if (!Array.isArray(data)) {
+            throw new Error('Datos no válidos recibidos del servidor');
+        }
+        // Filtrar pasos de nueva escuela, no nos importan
+        data = data.filter(step => step.escuela && step.escuela.toLowerCase() !== 'nueva escuela');
+        
+
         allSteps = data;
         updateFilters(data);
         updateUI(data);
