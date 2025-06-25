@@ -3,29 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Random Dance Step</title>
+  <title>Dancehall</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 2rem;
     }
-    #result {
-      margin-top: 1rem;
-      padding: 1rem;
+    h2 {
+      margin-top: 2rem;
+    }
+    .step {
       border: 1px solid #ccc;
+      padding: 1rem;
       border-radius: 8px;
+      margin-bottom: 1rem;
     }
     button {
+      margin-right: 0.5rem;
       padding: 0.5rem 1rem;
-      font-size: 1rem;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>Get a Random Dance Step</h1>
-  <button id="get-random">Get Random</button>
-  <div id="result"></div>
+  <h1>Pasos de dancehall</h1>
+
+  <h2>Sin practicar</h2>
+  <div id="unseen-list"></div>
+
+  <h2>Lo se ✅</h2>
+  <div id="known-list"></div>
+
+  <h2>No lo se ❌</h2>
+  <div id="dontknow-list"></div>
 
   <script src="index.js"></script>
 </body>
