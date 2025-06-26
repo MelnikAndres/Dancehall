@@ -7,15 +7,27 @@
     <title>Pasos de Dancehall</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
 </head>
 
 <body>
     <div id="reaction-container"></div>
-    <h1>🎵 Dancehall</h1>
+    <h1> <img class="jamaica" src="/dancehall/jamaica.jpeg" alt="Jamaica"> Dancehall <img class="jamaica"
+            src="/dancehall/jamaica.jpeg" alt="Jamaica">
+    </h1>
     <div id="main-actions">
-        <button id="get-random" class="btn btn-primary">🎲 Practicar</button>
-        <button id="reset-progress" class="btn btn-secondary">🔄 Reiniciar</button>
-        <button id="toggle-theme" class="btn btn-secondary">🌓 Modo oscuro</button>
+        <button id="get-random" class="btn btn-primary">
+            <i data-lucide="dice-5" class="icon"></i> Practicar
+        </button>
+
+        <button id="reset-progress" class="btn btn-secondary">
+            <i data-lucide="rotate-ccw" class="icon"></i> Reiniciar
+        </button>
+
+        <button id="toggle-theme" class="btn btn-secondary">
+            <i data-lucide="moon-star" class="icon"></i> Modo oscuro
+        </button>
     </div>
     <div id="random-step" class="step" style="display: none;"></div>
     <div id="filters">
@@ -38,7 +50,7 @@
     <div>
         <div class="section">
             <div class="section-title" onclick="toggleSection('unseen-list', this)">
-                <span class="toggle-icon">➕</span> Pasos no vistos 
+                <span class="toggle-icon">➕</span> Pasos no vistos
             </div>
             <div id="unseen-list" class="section-content"></div>
         </div>

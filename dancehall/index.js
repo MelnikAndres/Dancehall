@@ -290,10 +290,11 @@ function showReaction(reaction) {
     emoji.classList.add("reaction");
     emoji.innerHTML = '<img src="/dancehall/' + reaction + '.jpg" alt="' + reaction + '" />';
     emoji.style.right = Math.random() * 150 + "px";
-    
+
     container.appendChild(emoji);
 
     setTimeout(() => {
         emoji.remove();
     }, 1000); // match animation duration
 }
+lucide.createIcons();
