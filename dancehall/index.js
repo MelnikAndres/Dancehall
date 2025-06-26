@@ -20,7 +20,7 @@ function createStepHTML(step, status = null) {
     let html = `<div class="info">`;
     html += `<span class="capitalize-me"><strong >${step.nombre}</strong>`;
     if (step.video) {
-        html += `<a class="video-link" href="${step.video}" target="_blank">🎥 Ver video</a>`;
+        html += `<a class="video-link" href="${step.video}" target="_blank">▶︎</a>`;
     }
     html += `</span>`;
     // Mostrar etiqueta mini SOLO si es modo aleatorio y fue marcado como "no lo sé"
@@ -167,7 +167,7 @@ function showRandomStep(step) {
 
     if (!step) {
         randomBox.style.display = 'flex';
-        randomBox.innerHTML = '🎉 ¡Ya revisaste todos los pasos disponibles!';
+        randomBox.innerHTML = '🎉 ¡Ya sabes todos los pasos!';
         return;
     }
 
@@ -289,7 +289,7 @@ function showReaction(reaction) {
     const emoji = document.createElement("div");
     emoji.classList.add("reaction");
     emoji.innerHTML = '<img src="/dancehall/' + reaction + '.jpg" alt="' + reaction + '" />';
-    emoji.style.right = Math.random() * 30 + "px";
+    emoji.style.right = Math.random() * 150 + "px";
     
     container.appendChild(emoji);
 
