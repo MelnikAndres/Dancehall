@@ -218,7 +218,7 @@ async function loadSteps() {
             throw new Error('Datos no válidos recibidos del servidor');
         }
         // Filtrar pasos de nueva escuela, no nos importan
-        data = data.filter(step => step.escuela && step.escuela.toLowerCase() !== 'nueva escuela');
+        data = data.filter(step => !step.escuela || (step.escuela && step.escuela.toLowerCase() !== 'nueva escuela'));
 
 
         allSteps = data;
