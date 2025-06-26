@@ -10,10 +10,11 @@
 </head>
 
 <body>
+    <div id="reaction-container"></div>
     <h1>🎵 Dancehall</h1>
     <div id="main-actions">
-        <button id="get-random" class="btn btn-primary">🎲 Paso aleatorio</button>
-        <button id="reset-progress" class="btn btn-secondary">🔄 Reiniciar progreso</button>
+        <button id="get-random" class="btn btn-primary">🎲 Practicar</button>
+        <button id="reset-progress" class="btn btn-secondary">🔄 Reiniciar</button>
         <button id="toggle-theme" class="btn btn-secondary">🌓 Modo oscuro</button>
     </div>
     <div id="random-step" class="step" style="display: none;"></div>
@@ -35,15 +36,30 @@
         <div>Cargando pasos...</div>
     </div>
     <div>
-        <div class="section-title">🕵️ Pasos no vistos</div>
-        <div id="unseen-list"></div>
+        <div class="section">
+            <div class="section-title" onclick="toggleSection('unseen-list', this)">
+                <span class="toggle-icon">➕</span> Pasos no vistos 
+            </div>
+            <div id="unseen-list" class="section-content"></div>
+        </div>
 
-        <div class="section-title">✅ Ya los sé</div>
-        <div id="known-list"></div>
+        <div class="section">
+            <div class="section-title" onclick="toggleSection('known-list', this)">
+                <span class="toggle-icon">➕</span> Ya los sé
+            </div>
+            <div id="known-list" class="section-content"></div>
+        </div>
 
-        <div class="section-title">❌ No los sé</div>
-        <div id="dontknow-list"></div>
+        <div class="section">
+            <div class="section-title" onclick="toggleSection('dontknow-list', this)">
+                <span class="toggle-icon">➕</span> No los sé
+            </div>
+            <div id="dontknow-list" class="section-content"></div>
+        </div>
     </div>
+
+
     <script src="index.js"></script>
 </body>
+
 </html>

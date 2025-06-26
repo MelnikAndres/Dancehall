@@ -39,9 +39,8 @@ function createStepHTML(step, status = null) {
 }
 
 function escuelaTag(escuela) {
-    return `<span class="tag ${
-        escuela.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
-    }">${escuela}</span>`;
+    return `<span class="tag ${escuela.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
+        }">${escuela}</span>`;
 }
 
 
@@ -111,21 +110,23 @@ function updateUI(data) {
             actions.className = 'actions';
 
             const btnKnow = document.createElement('button');
-            btnKnow.textContent = '✅ Lo sé';
-            btnKnow.className = 'btn btn-primary';
+            btnKnow.textContent = '✔︎';
+            btnKnow.className = 'btn btn-green';
             btnKnow.onclick = () => {
                 progress[key] = 'know';
                 saveProgress(progress);
                 updateUI(data);
+                showReaction('happy');
             };
 
             const btnDontKnow = document.createElement('button');
-            btnDontKnow.textContent = "❌ No lo sé";
-            btnDontKnow.className = 'btn btn-secondary';
+            btnDontKnow.textContent = "✖︎";
+            btnDontKnow.className = 'btn btn-red';
             btnDontKnow.onclick = () => {
                 progress[key] = 'dontknow';
                 saveProgress(progress);
                 updateUI(data);
+                showReaction('sad');
             };
 
             actions.appendChild(btnKnow);
@@ -143,11 +144,19 @@ function updateUI(data) {
 
 function getRandomStep() {
     const progress = getProgress();
-    const available = allSteps.filter(step => {
+    let available = allSteps.filter(step => {
         const status = progress[step.nombre];
-        return (status !== 'know') && filterStep(step);
+        return (!status) && filterStep(step);
     });
-    if (available.length === 0) return null;
+    if (available.length === 0) {
+        available = allSteps.filter(step => {
+            const status = progress[step.nombre];
+            return (status !== 'know') && filterStep(step);
+        });
+    }
+    if (available.length === 0) {
+        return null; // No hay pasos disponibles
+    }
     return available[Math.floor(Math.random() * available.length)];
 }
 
@@ -157,36 +166,38 @@ function showRandomStep(step) {
     const progress = getProgress();
 
     if (!step) {
-        randomBox.style.display = 'block';
+        randomBox.style.display = 'flex';
         randomBox.innerHTML = '🎉 ¡Ya revisaste todos los pasos disponibles!';
         return;
     }
 
     const status = progress[step.nombre]; // puede ser "dontknow"
-    randomBox.style.display = 'block';
+    randomBox.style.display = 'flex';
     randomBox.innerHTML = createStepHTML(step, status);
 
     const actions = document.createElement('div');
     actions.className = 'actions';
 
     const btnKnow = document.createElement('button');
-    btnKnow.textContent = '✅ Ya lo sé';
-    btnKnow.className = 'btn btn-primary';
+    btnKnow.textContent = '✔︎';
+    btnKnow.className = 'btn btn-green';
     btnKnow.onclick = () => {
         progress[step.nombre] = 'know';
         saveProgress(progress);
         updateUI(allSteps);
         showRandomStep(getRandomStep());
+        showReaction('happy');
     };
 
     const btnDontKnow = document.createElement('button');
-    btnDontKnow.textContent = "❌ No lo sé";
-    btnDontKnow.className = 'btn btn-secondary';
+    btnDontKnow.textContent = "✖︎";
+    btnDontKnow.className = 'btn btn-red';
     btnDontKnow.onclick = () => {
         progress[step.nombre] = 'dontknow';
         saveProgress(progress);
         updateUI(allSteps);
         showRandomStep(getRandomStep());
+        showReaction('sad')
     };
 
     actions.appendChild(btnKnow);
@@ -208,7 +219,7 @@ async function loadSteps() {
         }
         // Filtrar pasos de nueva escuela, no nos importan
         data = data.filter(step => step.escuela && step.escuela.toLowerCase() !== 'nueva escuela');
-        
+
 
         allSteps = data;
         updateFilters(data);
@@ -260,3 +271,29 @@ document.getElementById('toggle-theme').addEventListener('click', toggleTheme);
 
 // Apply on load
 applyTheme();
+
+
+function toggleSection(id, titleEl) {
+    const section = document.getElementById(id);
+    const isVisible = section.style.display === 'block';
+    section.style.display = isVisible ? 'none' : 'block';
+
+    const icon = titleEl.querySelector('.toggle-icon');
+    icon.textContent = isVisible ? '➕' : '➖';
+}
+
+
+function showReaction(reaction) {
+    const container = document.getElementById("reaction-container");
+
+    const emoji = document.createElement("div");
+    emoji.classList.add("reaction");
+    emoji.innerHTML = '<img src="/dancehall/' + reaction + '.jpg" alt="' + reaction + '" />';
+    emoji.style.right = Math.random() * 30 + "px";
+    
+    container.appendChild(emoji);
+
+    setTimeout(() => {
+        emoji.remove();
+    }, 1000); // match animation duration
+}
