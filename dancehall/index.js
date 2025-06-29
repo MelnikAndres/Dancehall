@@ -349,7 +349,7 @@ function showReaction(reaction) {
 
     const emoji = document.createElement("div");
     emoji.classList.add("reaction");
-    emoji.innerHTML = '<img src="/dancehall/' + reaction + '.jpg" alt="' + reaction + '" />';
+    emoji.innerHTML = '<img class="meme" src="/dancehall/' + reaction + '.jpg" alt="' + reaction + '" />';
     emoji.style.right = Math.random() * 150 + "px";
 
     container.appendChild(emoji);

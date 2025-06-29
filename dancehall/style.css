@@ -431,3 +431,16 @@ body.dark-mode .search-input {
     color: #eee;
     border: 1px solid #444;
 }
+
+
+.meme{
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
