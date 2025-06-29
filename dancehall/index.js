@@ -21,7 +21,9 @@ function resetProgress() {
 
 function createStepHTML(step, status = null) {
     let html = `<div class="info">`;
-    html += `<span class="capitalize-me"><strong >${step.nombre}</strong>`;
+    html += `<span class="capitalize-me"><strong >${step.nombre}</strong></span>`;
+
+    html += "<div>"
     if (step.video) {
         html += `<a class="video-link" href="${step.video}" target="_blank">Clase ▶︎</a>`;
     }
@@ -30,7 +32,7 @@ function createStepHTML(step, status = null) {
         const indexInFiltered = filteredSteps.findIndex(s => s.nombre === step.nombre);
         html += ` <a href="#" class="video-link" class="video-button" onclick="showVideoVariations('${step.nombre}', ${indexInFiltered})">Nosotros 🎥</a>`;
     }
-    html += `</span>`;
+    html += `</div>`;
     // Mostrar etiqueta mini SOLO si es modo aleatorio y fue marcado como "no lo sé"
     if (status === 'dontknow') {
         html += `<span class="random-status-tag">❓ Antes no lo sabias!</span>`;

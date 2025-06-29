@@ -116,7 +116,6 @@ h1 {
     text-decoration: none;
     display: inline-block;
     vertical-align: super;
-    margin-left: 0.5rem;
     transition: background 0.3s ease;
 }
 
