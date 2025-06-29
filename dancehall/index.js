@@ -162,7 +162,7 @@ function updateUI(data) {
             const actions = document.createElement('div');
             actions.className = 'actions';
             const resetBtn = document.createElement('button');
-            resetBtn.textContent = '↩︎';
+            resetBtn.textContent = '🔄';
             resetBtn.title = 'Reiniciar este paso';
             resetBtn.className = 'btn btn-secondary';
 
@@ -179,7 +179,7 @@ function updateUI(data) {
             const actions = document.createElement('div');
             actions.className = 'actions';
             const resetBtn = document.createElement('button');
-            resetBtn.textContent = '↩︎';
+            resetBtn.textContent = '🔄';
             resetBtn.title = 'Reiniciar este paso';
             resetBtn.className = 'btn btn-secondary';
 
