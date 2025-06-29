@@ -363,7 +363,8 @@ h1 {
     background: #111;
     padding: 1rem;
     border-radius: 10px;
-    max-width: 90%;
+    max-width: 85%;
+    width: max-content;
     max-height: 90%;
     display: flex;
     flex-direction: column;
@@ -371,8 +372,8 @@ h1 {
 }
 
 .video-content video {
-    max-width: 100%;
     max-height: 70vh;
+    max-width: 70vw;
     margin-bottom: 1rem;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(0,0,0,0.4);
@@ -424,6 +425,7 @@ body.dark-mode .step-title {
     font-size: 0.9rem;
     box-shadow: var(--shadow);
     width: 100%;
+    box-sizing: border-box;
 }
 body.dark-mode .search-input {
     background-color: #1f2937;
