@@ -20,7 +20,8 @@ function doGet(e) {
       escuela: row[1],
       creador: row[2],
       instructional: row[3],
-      video: videoUrl // the actual hyperlink instead of just text
+      video: videoUrl, // the actual hyperlink instead of just text
+      grabado: row[5] ? row[5].toLowerCase() === 'si' : false, // Assuming 'Grabado' is in column 6 (index 5)
     };
   });
 

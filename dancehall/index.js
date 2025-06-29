@@ -2,6 +2,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbykojLh3xcGemrU3mafTxgJ
 
 const storageKey = 'danceStepsProgress';
 let allSteps = [];
+let filteredSteps = [];
+let currentModalStepIndex = -1;
 
 function getProgress() {
     return JSON.parse(localStorage.getItem(storageKey)) || {};
@@ -13,6 +15,7 @@ function saveProgress(progress) {
 
 function resetProgress() {
     localStorage.removeItem(storageKey);
+
     loadSteps();
 }
 
@@ -20,7 +23,12 @@ function createStepHTML(step, status = null) {
     let html = `<div class="info">`;
     html += `<span class="capitalize-me"><strong >${step.nombre}</strong>`;
     if (step.video) {
-        html += `<a class="video-link" href="${step.video}" target="_blank">▶︎</a>`;
+        html += `<a class="video-link" href="${step.video}" target="_blank">Clase ▶︎</a>`;
+    }
+    console.log(step);
+    if (step.grabado) {
+        const indexInFiltered = filteredSteps.findIndex(s => s.nombre === step.nombre);
+        html += ` <a href="#" class="video-link" class="video-button" onclick="showVideoVariations('${step.nombre}', ${indexInFiltered})">Nosotros 🎥</a>`;
     }
     html += `</span>`;
     // Mostrar etiqueta mini SOLO si es modo aleatorio y fue marcado como "no lo sé"
@@ -50,17 +58,21 @@ function escuelaTag(escuela) {
 function updateFilters(data) {
     const escuelas = new Set();
     const creadores = new Set();
+    const instructional = new Set();
 
     data.forEach(step => {
         if (step.escuela) escuelas.add(step.escuela);
         if (step.creador) creadores.add(step.creador);
+        if (step.instructional) instructional.add(step.instructional);
     });
 
     const escuelaSelect = document.getElementById('filter-escuela');
     const creadorSelect = document.getElementById('filter-creador');
+    const instructionalSelect = document.getElementById('filter-instructional');
 
-    escuelaSelect.innerHTML = '<option value="">Filtrar por Escuela</option>';
-    creadorSelect.innerHTML = '<option value="">Filtrar por Creador</option>';
+    escuelaSelect.innerHTML = '<option value="">Elegir</option>';
+    creadorSelect.innerHTML = '<option value="">Elegir</option>';
+    instructionalSelect.innerHTML = '<option value="">Elegir</option>';
 
     [...escuelas].sort().forEach(value => {
         escuelaSelect.innerHTML += `<option value="${value}">${value}</option>`;
@@ -69,20 +81,24 @@ function updateFilters(data) {
     [...creadores].sort().forEach(value => {
         creadorSelect.innerHTML += `<option value="${value}">${value}</option>`;
     });
+
+    [...instructional].sort().forEach(value => {
+        instructionalSelect.innerHTML += `<option value="${value}">${value}</option>`;
+    });
 }
 
 function filterStep(step) {
     const escuela = document.getElementById('filter-escuela').value;
     const creador = document.getElementById('filter-creador').value;
     const instructional = document.getElementById('filter-instructional').value;
+    const search = document.getElementById('search-step').value.trim().toLowerCase();
+
 
     if (escuela && step.escuela !== escuela) return false;
     if (creador && step.creador !== creador) return false;
-    if (instructional) {
-        const hasInstructional = !!step.instructional;
-        if (instructional === 'yes' && !hasInstructional) return false;
-        if (instructional === 'no' && hasInstructional) return false;
-    }
+    if (instructional && step.instructional !== instructional) return false;
+    if (search && !step.nombre.toLowerCase().includes(search)) return false;
+
     return true;
 }
 
@@ -92,13 +108,20 @@ function updateUI(data) {
     const knownContainer = document.getElementById('known-list');
     const dontknowContainer = document.getElementById('dontknow-list');
 
+    if (isFilterActive()) {
+        document.getElementById('filtros-danger').style.display = 'block';
+    } else {
+        document.getElementById('filtros-danger').style.display = 'none';
+    }
+
     unseenContainer.innerHTML = '';
     knownContainer.innerHTML = '';
     dontknowContainer.innerHTML = '';
-
-    data.forEach(step => {
-        if (!filterStep(step)) return;
-
+    let knownCount = 0;
+    let dontknowCount = 0;
+    let unseenCount = 0;
+    filteredSteps = data.filter(filterStep);
+    filteredSteps.forEach(step => {
         const key = step.nombre;
         const status = progress[key];
         const div = document.createElement('div');
@@ -133,12 +156,46 @@ function updateUI(data) {
             actions.appendChild(btnDontKnow);
             div.appendChild(actions);
             unseenContainer.appendChild(div);
+            unseenCount++;
         } else if (status === 'know') {
+            const actions = document.createElement('div');
+            actions.className = 'actions';
+            const resetBtn = document.createElement('button');
+            resetBtn.textContent = '↩︎';
+            resetBtn.title = 'Reiniciar este paso';
+            resetBtn.className = 'btn btn-secondary';
+
+            resetBtn.onclick = () => {
+                delete progress[key];
+                saveProgress(progress);
+                updateUI(data);
+            };
+            actions.appendChild(resetBtn);
+            div.appendChild(actions);
             knownContainer.appendChild(div);
+            knownCount++;
         } else if (status === 'dontknow') {
+            const actions = document.createElement('div');
+            actions.className = 'actions';
+            const resetBtn = document.createElement('button');
+            resetBtn.textContent = '↩︎';
+            resetBtn.title = 'Reiniciar este paso';
+            resetBtn.className = 'btn btn-secondary';
+
+            resetBtn.onclick = () => {
+                delete progress[key];
+                saveProgress(progress);
+                updateUI(data);
+            };
+            actions.appendChild(resetBtn);
+            div.appendChild(actions);
             dontknowContainer.appendChild(div);
+            dontknowCount++;
         }
     });
+    document.getElementById('known-count').textContent = knownCount;
+    document.getElementById('dontKnown-count').textContent = dontknowCount;
+    document.getElementById('unseen-count').textContent = unseenCount;
 }
 
 
@@ -250,6 +307,9 @@ document.getElementById('reset-progress').addEventListener('click', () => {
     document.getElementById(id).addEventListener('change', () => updateUI(allSteps));
 });
 
+document.getElementById('search-step').addEventListener('input', () => updateUI(allSteps));
+
+
 loadSteps();
 
 
@@ -298,3 +358,93 @@ function showReaction(reaction) {
     }, 1000); // match animation duration
 }
 lucide.createIcons();
+
+
+function isFilterActive() {
+    const escuela = document.getElementById('filter-escuela').value;
+    const creador = document.getElementById('filter-creador').value;
+    const instructional = document.getElementById('filter-instructional').value;
+    const search = document.getElementById('search-step').value.trim().toLowerCase();
+
+    return escuela || creador || instructional || search;
+}
+
+function showVideoVariations(stepName, indexInFilteredSteps = null) {
+    const base = stepName.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
+    const modal = document.createElement('div');
+    modal.className = 'video-modal';
+
+    modal.innerHTML = `
+        <div class="video-backdrop" onclick="this.parentElement.remove()"></div>
+        <div class="video-content">
+            <select id="video-selector" class="btn btn-secondary"></select>
+            <h2 id="video-step-title" class="step-title">${stepName}</h2>
+            <div class="video-controls">
+                <button id="previous-step" class="arrow-btn btn-secondary"><</button>
+                <video id="video-player" controls autoplay loop></video>
+                <button id="next-step" class="arrow-btn btn-secondary">></button>
+            </div>
+            <button class="btn btn-secondary close-btn" onclick="this.closest('.video-modal').remove()">Cerrar</button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const selector = modal.querySelector('#video-selector');
+    const player = modal.querySelector('#video-player');
+
+    const sources = [
+        { label: 'Original', url: `/dancehall/pasos/${base}.mp4` },
+        ...Array.from({ length: 5 }, (_, i) => ({
+            label: `Variante ${i + 1}`,
+            url: `/dancehall/pasos/${base}-var-${i + 1}.mp4`
+        }))
+    ];
+
+    let foundOne = false;
+
+    sources.forEach(source => {
+        const option = document.createElement('option');
+        option.value = source.url;
+        option.textContent = source.label;
+
+        fetch(source.url, { method: 'HEAD' }).then(res => {
+            if (res.ok) {
+                selector.appendChild(option);
+                if (!foundOne) {
+                    player.src = source.url;
+                    foundOne = true;
+                }
+            }
+        }).catch(() => {
+            // archivo no existe, no agregar
+        });
+    });
+
+    selector.addEventListener('change', () => {
+        player.src = selector.value;
+        player.play();
+    });
+
+    const nextButton = modal.querySelector('#next-step');
+    if (indexInFilteredSteps === null || !filteredSteps.length || indexInFilteredSteps >= filteredSteps.length - 1) {
+        nextButton.classList.add('disabled');
+    } else {
+        nextButton.onclick = () => {
+            const nextStep = filteredSteps[indexInFilteredSteps + 1];
+            modal.remove();
+            showVideoVariations(nextStep.nombre, indexInFilteredSteps + 1);
+        };
+    }
+    const previousButton = modal.querySelector('#previous-step');
+    if (indexInFilteredSteps === null || indexInFilteredSteps <= 0) {
+        previousButton.classList.add('disabled');
+    } else {
+        previousButton.onclick = () => {
+            const previousStep = filteredSteps[indexInFilteredSteps - 1];
+            modal.remove();
+            showVideoVariations(previousStep.nombre, indexInFilteredSteps - 1);
+        };
+    }
+}
+
