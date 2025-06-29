@@ -27,10 +27,9 @@ function createStepHTML(step, status = null) {
     if (step.video) {
         html += `<a class="video-link" href="${step.video}" target="_blank">Clase ▶︎</a>`;
     }
-    console.log(step);
     if (step.grabado) {
         const indexInFiltered = filteredSteps.findIndex(s => s.nombre === step.nombre);
-        html += ` <a href="#" class="video-link" class="video-button" onclick="showVideoVariations('${step.nombre}', ${indexInFiltered})">Nosotros 🎥</a>`;
+        html += ` <a href="#" class="video-link" class="video-button" onclick="event.preventDefault();showVideoVariations('${step.nombre}', ${indexInFiltered})">Nosotros 🎥</a>`;
     }
     html += `</div>`;
     // Mostrar etiqueta mini SOLO si es modo aleatorio y fue marcado como "no lo sé"
@@ -418,8 +417,8 @@ function showVideoVariations(stepName, indexInFilteredSteps = null) {
                     foundOne = true;
                 }
             }
-        }).catch(() => {
-            // archivo no existe, no agregar
+        }).catch(err => {
+            console.error(`Error fetching ${source.url}:`, err);
         });
     });
 
