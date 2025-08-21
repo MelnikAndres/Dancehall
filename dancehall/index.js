@@ -270,12 +270,9 @@ async function loadSteps() {
     try {
         const response = await fetch(API_URL);
         let data = await response.json();
-        // Filtrar pasos de nueva escuela, no nos importan
-
         if (!Array.isArray(data)) {
             throw new Error('Datos no válidos recibidos del servidor');
         }
-        // Filtrar pasos de nueva escuela, no nos importan
         allSteps = data;
         updateFilters(data);
         updateUI(data);
