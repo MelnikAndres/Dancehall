@@ -29,7 +29,7 @@ function createStepHTML(step, status = null) {
     }
     if (step.grabado) {
         const indexInFiltered = filteredSteps.findIndex(s => s.nombre === step.nombre);
-        html += ` <a href="#" class="video-link" class="video-button" onclick="event.preventDefault();showVideoVariations('${step.nombre}', ${indexInFiltered})">Nosotros 🎥</a>`;
+        html += ` <a href="#" class="video-link" class="video-button" onclick="event.preventDefault();showVideoVariations('${step.nombre}',${step.variaciones}, ${indexInFiltered})">Nosotros 🎥</a>`;
     }
     html += `</div>`;
     // Mostrar etiqueta mini SOLO si es modo aleatorio y fue marcado como "no lo sé"
@@ -364,7 +364,7 @@ function isFilterActive() {
     return escuela || creador || instructional || search;
 }
 
-function showVideoVariations(stepName, indexInFilteredSteps = null) {
+function showVideoVariations(stepName, vars, indexInFilteredSteps = null) {
     const base = stepName.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]/g, '');
     const modal = document.createElement('div');
     modal.className = 'video-modal';
@@ -388,28 +388,20 @@ function showVideoVariations(stepName, indexInFilteredSteps = null) {
     const selector = modal.querySelector('#video-selector');
     const player = modal.querySelector('#video-player');
 
-    const sources = [
-        { label: 'Original', url: `/dancehall/pasos/${base}.mp4` },
-        ...Array.from({ length: 5 }, (_, i) => ({
-            label: `Variante ${i + 1}`,
-            url: `/dancehall/pasos/${base}-var-${i + 1}.mp4`
-        }))
-    ];
-    console.log(sources);
+    if (vars){
+        const defaultOption = document.createElement('option');
+        defaultOption.value = `/dancehall/pasos/${base}.mp4`;
+        defaultOption.textContent = 'Base';
+        selector.appendChild(defaultOption);
+        player.src = `/dancehall/pasos/${base}.mp4`;
+    }
 
-
-    sources.forEach(source => {
+    for (let i = 1; i < vars; i++) {
         const option = document.createElement('option');
-        option.value = source.url;
-        option.textContent = source.label;
-        fetch(source.url, { method: 'HEAD' }).then(res => {
-            if (res.ok) {
-                selector.appendChild(option);
-            }
-        })
-    });
-
-    player.src = sources[0].url;
+        option.value = `/dancehall/pasos/${base}-var-${i}.mp4`;
+        option.textContent = `Variante ${i}`;
+        selector.appendChild(option);
+    }
 
     selector.addEventListener('change', () => {
         player.src = selector.value;
