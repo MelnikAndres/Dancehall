@@ -395,26 +395,21 @@ function showVideoVariations(stepName, indexInFilteredSteps = null) {
             url: `/dancehall/pasos/${base}-var-${i + 1}.mp4`
         }))
     ];
+    console.log(sources);
 
-    let foundOne = false;
 
     sources.forEach(source => {
         const option = document.createElement('option');
         option.value = source.url;
         option.textContent = source.label;
-
         fetch(source.url, { method: 'HEAD' }).then(res => {
             if (res.ok) {
                 selector.appendChild(option);
-                if (!foundOne) {
-                    player.src = source.url;
-                    foundOne = true;
-                }
             }
-        }).catch(err => {
-            console.error(`Error fetching ${source.url}:`, err);
-        });
+        })
     });
+
+    player.src = sources[0].url;
 
     selector.addEventListener('change', () => {
         player.src = selector.value;
