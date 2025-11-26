@@ -415,7 +415,7 @@ function showVideoVariations(stepName, vars, indexInFilteredSteps = null) {
         nextButton.onclick = () => {
             const nextStep = filteredSteps[indexInFilteredSteps + 1];
             modal.remove();
-            showVideoVariations(nextStep.nombre, indexInFilteredSteps + 1);
+            showVideoVariations(nextStep.nombre,nextStep.variaciones, indexInFilteredSteps + 1);
         };
     }
     const previousButton = modal.querySelector('#previous-step');
@@ -425,7 +425,7 @@ function showVideoVariations(stepName, vars, indexInFilteredSteps = null) {
         previousButton.onclick = () => {
             const previousStep = filteredSteps[indexInFilteredSteps - 1];
             modal.remove();
-            showVideoVariations(previousStep.nombre, indexInFilteredSteps - 1);
+            showVideoVariations(previousStep.nombre,previousStep.variaciones, indexInFilteredSteps - 1);
         };
     }
 }
